@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target":"ESNext",
+        "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "Node",
         "esModuleInterop": true,
@@ -9,6 +9,8 @@
         "skipLibCheck": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "outDir": "./built/"
+        "outDir": "./built/",
+        "lib": ["ESNext"],
     },
+    "include": ["src"],
 }

@@ -1,6 +1,7 @@
 import { WebSocketServer } from 'ws';
+import { Connected } from './states/Connected.js';
 
-export let ws: WebSocketServer;
+let ws: WebSocketServer;
 
 export function startWsServer(server: any) {
     ws = new WebSocketServer({ server: server });
@@ -13,5 +14,7 @@ export function startWsServer(server: any) {
         console.log(`Websocket server listening on ${address}`);
     });
 
-    ws.on('connection', (connection) => {});
+    ws.on('connection', (connection) => {
+        new Connected(connection);
+    });
 }

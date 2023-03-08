@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { JsonValue, SendJsonMessage } from "react-use-websocket/dist/lib/types";
-import { Action } from "./Action";
+import { useEffect, useState } from 'react';
+import { JsonValue, SendJsonMessage } from 'react-use-websocket/dist/lib/types';
+import { Action } from './Action';
 
 export function InLobby({
     setState,
@@ -11,8 +11,10 @@ export function InLobby({
     lastJsonMessage: JsonValue | null;
     sendJsonMessage: SendJsonMessage;
 }) {
-    const [lobbyIndex, setLobbyIndex] = useState(undefined as number | undefined);
-    
+    const [lobbyIndex, setLobbyIndex] = useState(
+        undefined as number | undefined
+    );
+
     useEffect(() => {
         if (lastJsonMessage !== null) {
             const action = lastJsonMessage as Action;
@@ -25,15 +27,17 @@ export function InLobby({
     }, [lastJsonMessage]);
 
     useEffect(() => {
-        sendJsonMessage({action: 'lobbyIndex'});
-    }, [])
+        sendJsonMessage({ action: 'lobbyIndex' });
+    }, []);
 
     return (
         <>
             <h1>Waiting for other player...</h1>
-            {lobbyIndex !== undefined && <h2>Your lobby index is {lobbyIndex}</h2>}
+            {lobbyIndex !== undefined && (
+                <h2>Your lobby index is {lobbyIndex}</h2>
+            )}
             <div aria-busy="true" />
-            <button>Disconnect</button>
+            <button onClick={() => window.location.reload()}>Disconnect</button>
         </>
     );
 }

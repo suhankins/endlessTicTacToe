@@ -5,14 +5,14 @@ import { State } from './State.js';
 export class InLobby extends State {
     index: number;
 
-    static LOBBIES = new Map<number, InLobby>();
+    static LOBBIES: { [id: number]: InLobby } = {};
     static GLOBAL_INDEX = 0;
 
     constructor(connection: WebSocket) {
         super(connection);
 
         this.index = InLobby.GLOBAL_INDEX++;
-        InLobby.LOBBIES.set(this.index, this);
+        InLobby.LOBBIES[this.index] = this;
         console.log(`Lobby ${this.index} created`);
 
         this.connection.on('message', (rawData) => {
@@ -36,6 +36,6 @@ export class InLobby extends State {
     }
 
     removeSelf() {
-        InLobby.LOBBIES.delete(this.index);
+        delete InLobby.LOBBIES[this.index];
     }
 }

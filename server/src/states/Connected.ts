@@ -6,14 +6,14 @@ import { State } from './State.js';
 export class Connected extends State {
     index: number;
 
-    static PLAYERS = new Map<number, Connected>();
+    static PLAYERS: { [id: number]: Connected } = {};
     static GLOBAL_INDEX = 0;
 
     constructor(connection: WebSocket) {
         super(connection);
 
         this.index = Connected.GLOBAL_INDEX++;
-        Connected.PLAYERS.set(this.index, this);
+        Connected.PLAYERS[this.index] = this;
         console.log(`Player ${this.index} connected`);
 
         this.connection.on('message', (rawData) => {
@@ -25,11 +25,10 @@ export class Connected extends State {
                         this.removeSelf();
                         break;
                     case 'lobbies':
-                        console.log(InLobby.LOBBIES)
                         this.connection.send(
                             JSON.stringify({
                                 action: 'lobbies',
-                                data: [...InLobby.LOBBIES.keys()],
+                                data: Object.keys(InLobby.LOBBIES),
                             })
                         );
                         break;
@@ -48,6 +47,6 @@ export class Connected extends State {
     }
 
     removeSelf() {
-        Connected.PLAYERS.delete(this.index);
+        delete Connected.PLAYERS[this.index];
     }
 }

@@ -33,11 +33,17 @@ export function Connected({
     return (
         <div className="grid">
             <div>
-                {lobbies.map((value) => (
-                    <button key={value} className="contrast">
-                        Join lobby #{value}
-                    </button>
-                ))}
+                <h2>Lobbies: {lobbies.length}</h2>
+                <div>
+                    {lobbies.map((value) => (
+                        <button key={value} className="contrast">
+                            Join lobby #{value}
+                        </button>
+                    ))}
+                </div>
+                <button className="outline" onClick={getLobbies}>
+                    Refresh
+                </button>
             </div>
             <div>
                 <button

@@ -1,18 +1,19 @@
 import WebSocket from 'ws';
 import { Message } from '../Message.js';
+import { Game } from './Game.js';
 import { State } from './State.js';
 
-export class InLobby extends State {
+export class Lobby extends State {
     index: number;
 
-    static LOBBIES: { [id: number]: InLobby } = {};
+    static LOBBIES: { [id: number]: Lobby } = {};
     static GLOBAL_INDEX = 0;
 
     constructor(connection: WebSocket) {
         super(connection);
 
-        this.index = InLobby.GLOBAL_INDEX++;
-        InLobby.LOBBIES[this.index] = this;
+        this.index = Lobby.GLOBAL_INDEX++;
+        Lobby.LOBBIES[this.index] = this;
         console.log(`Lobby ${this.index} created`);
 
         this.connection.on('message', (rawData) => {
@@ -35,7 +36,13 @@ export class InLobby extends State {
         });
     }
 
+    startGame(otherPlayer: WebSocket) {
+        this.connection.send(JSON.stringify({ action: 'joinedLobby' }));
+        new Game(this.connection, otherPlayer);
+        this.removeSelf();
+    }
+
     removeSelf() {
-        delete InLobby.LOBBIES[this.index];
+        delete Lobby.LOBBIES[this.index];
     }
 }

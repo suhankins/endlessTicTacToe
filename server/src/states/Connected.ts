@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
 import { Message } from '../Message.js';
-import { InLobby } from './InLobby.js';
+import { Lobby } from './Lobby.js';
 import { State } from './State.js';
 
 export class Connected extends State {
@@ -21,17 +21,33 @@ export class Connected extends State {
                 const message = JSON.parse(rawData.toString()) as Message;
                 switch (message.action) {
                     case 'hostLobby':
-                        new InLobby(this.connection);
+                        new Lobby(this.connection);
                         this.removeSelf();
                         break;
                     case 'lobbies':
                         this.connection.send(
                             JSON.stringify({
                                 action: 'lobbies',
-                                data: Object.keys(InLobby.LOBBIES),
+                                data: Object.keys(Lobby.LOBBIES),
                             })
                         );
                         break;
+                    case 'joinLobby':
+                        const data = message.data;
+                        if (
+                            typeof data === 'number' &&
+                            Lobby.LOBBIES[data] !== undefined
+                        ) {
+                            this.connection.send(
+                                JSON.stringify({ action: 'joinedLobby' })
+                            );
+                            Lobby.LOBBIES[data].startGame(this.connection);
+                            this.removeSelf();
+                        } else {
+                            this.connection.send(
+                                JSON.stringify({ action: 'joinFailed' })
+                            );
+                        }
                 }
             } catch (e) {
                 console.error(`Player ${this.index} caused an error!`);

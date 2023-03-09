@@ -3,7 +3,7 @@ import {
     JsonValue,
     SendJsonMessage,
 } from 'react-use-websocket/dist/lib/types.js';
-import { Action } from './Action.js';
+import { Message } from './Message.js';
 
 export function Connected({
     setState,
@@ -21,7 +21,7 @@ export function Connected({
 
     useEffect(() => {
         if (lastJsonMessage !== null) {
-            const action = lastJsonMessage as Action;
+            const action = lastJsonMessage as Message;
             switch (action.action) {
                 case 'lobbies':
                     setLobbies(action.data);

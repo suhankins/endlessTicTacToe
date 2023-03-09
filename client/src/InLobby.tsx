@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { JsonValue, SendJsonMessage } from 'react-use-websocket/dist/lib/types';
-import { Action } from './Action';
+import { Message } from './Message';
 
 export function InLobby({
     setState,
@@ -17,7 +17,7 @@ export function InLobby({
 
     useEffect(() => {
         if (lastJsonMessage !== null) {
-            const action = lastJsonMessage as Action;
+            const action = lastJsonMessage as Message;
             switch (action.action) {
                 case 'lobbyIndex':
                     setLobbyIndex(action.data);

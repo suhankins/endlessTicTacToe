@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws';
-import { ActionMessage } from '../ActionMessage.js';
+import { Message } from '../Message.js';
 import { InLobby } from './InLobby.js';
 import { State } from './State.js';
 
@@ -18,8 +18,8 @@ export class Connected extends State {
 
         this.connection.on('message', (rawData) => {
             try {
-                const data = JSON.parse(rawData.toString()) as ActionMessage;
-                switch (data.action) {
+                const message = JSON.parse(rawData.toString()) as Message;
+                switch (message.action) {
                     case 'hostLobby':
                         new InLobby(this.connection);
                         this.removeSelf();

@@ -1,4 +1,4 @@
-export type ActionMessage = {
+export type Message = {
     action: string,
     data: any
 }

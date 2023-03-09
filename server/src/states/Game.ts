@@ -122,9 +122,12 @@ export class Game extends MultiConnectionState {
             // column
             for (let x = 0; x < this.field.length; x++)
                 if (this.checkColumn(x, y)) return this.field[y][x];
-            // diagonal
+            // diagonal left-right
             for (let x = 0; x < this.field.length - 2; x++)
                 if (this.checkDiagonal(x, y)) return this.field[y][x];
+            // diagonal right-left
+            for (let x = this.field.length; x > 2; x++)
+                if (this.checkDiagonalRightLeft(x, y)) return this.field[y][x];
         }
         // row
         for (let y = 0; y < this.field.length; y++) {
@@ -172,6 +175,20 @@ export class Game extends MultiConnectionState {
             this.field[y][x] === this.field[y + 2][x + 2]
         );
     }
+
+    /**
+     * X . .
+     * . X .
+     * . . X
+     */
+        checkDiagonalRightLeft(x: number, y: number) {
+            return (
+                this.field[y][x] !== 0 &&
+                this.field[y][x] === this.field[y + 1][x - 1] &&
+                this.field[y][x] === this.field[y + 2][x - 2]
+            );
+        }
+    
 
     checkDraw() {
         return this.field.every((row) => row.every((column) => column !== 0));

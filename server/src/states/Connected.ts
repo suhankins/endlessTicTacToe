@@ -33,9 +33,10 @@ export class Connected extends State {
                         );
                         break;
                     case 'joinLobby':
-                        const data = message.data;
+                        const data = parseInt(message.data);
+                        console.log('attempt', typeof data, data, Lobby.LOBBIES[data] !== undefined);
                         if (
-                            typeof data === 'number' &&
+                            !Number.isNaN(data) &&
                             Lobby.LOBBIES[data] !== undefined
                         ) {
                             this.connection.send(

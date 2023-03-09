@@ -26,6 +26,9 @@ export function Connected({
                 case 'lobbies':
                     setLobbies(action.data);
                     break;
+                case 'joinedLobby':
+                    setState('inGame');
+                    break;
             }
         }
     }, [lastJsonMessage]);
@@ -35,9 +38,17 @@ export function Connected({
             <div>
                 <h2>Lobbies: {lobbies.length}</h2>
                 <div>
-                    {lobbies.map((value) => (
-                        <button key={value} className="contrast">
-                            Join lobby #{value}
+                    {lobbies.map((lobbyIndex) => (
+                        <button
+                            key={lobbyIndex}
+                            onClick={() =>
+                                sendJsonMessage({
+                                    action: 'joinLobby',
+                                    data: lobbyIndex,
+                                })
+                            }
+                            className="contrast">
+                            Join lobby #{lobbyIndex}
                         </button>
                     ))}
                 </div>

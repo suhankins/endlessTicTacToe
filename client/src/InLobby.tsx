@@ -22,6 +22,9 @@ export function InLobby({
                 case 'lobbyIndex':
                     setLobbyIndex(action.data);
                     break;
+                case 'joinedLobby':
+                    setState('inGame');
+                    break;
             }
         }
     }, [lastJsonMessage]);

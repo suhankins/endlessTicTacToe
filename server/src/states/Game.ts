@@ -13,6 +13,8 @@ export class Game {
     constructor(crosses: WebSocket, circles: WebSocket) {
         this.crosses = crosses;
         this.circles = circles;
+
+        console.log(`New game started!`);
     }
 
     emptyField(size: number) {

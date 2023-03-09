@@ -38,6 +38,7 @@ export class Lobby extends State {
 
     startGame(otherPlayer: WebSocket) {
         this.connection.send(JSON.stringify({ action: 'joinedLobby' }));
+        console.log(`Lobby ${this.index} closed, beginning a game`);
         new Game(this.connection, otherPlayer);
         this.removeSelf();
     }

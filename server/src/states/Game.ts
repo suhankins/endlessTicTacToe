@@ -1,18 +1,22 @@
 import { WebSocket } from 'ws';
-import { State } from './State.js';
+import { MultiConnectionState } from './State.js';
 
 type Square = 0 | 1 | 2;
 
-export class Game {
+export class Game extends MultiConnectionState {
     static DEFAULT_SIZE = 3;
 
-    crosses: WebSocket;
-    circles: WebSocket;
+    public get crosses() {
+        return this.connection[0];
+    }
+    public get circles() {
+        return this.connection[1];
+    }
+
     field: Square[][] = this.emptyField(Game.DEFAULT_SIZE);
 
     constructor(crosses: WebSocket, circles: WebSocket) {
-        this.crosses = crosses;
-        this.circles = circles;
+        super([crosses, circles]);
 
         console.log(`New game started!`);
     }
@@ -27,5 +31,9 @@ export class Game {
         const response = JSON.stringify({ action: 'field', data: this.field });
         this.crosses.send(response);
         this.circles.send(response);
+    }
+
+    removeSelf(): void {
+        
     }
 }

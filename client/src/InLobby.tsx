@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { JsonValue, SendJsonMessage } from 'react-use-websocket/dist/lib/types';
 import { Message } from './Message';
+import { ReloadPage } from './ReloadPage';
 
 export function InLobby({
     setState,
@@ -40,7 +41,7 @@ export function InLobby({
                 <h2>Your lobby index is {lobbyIndex}</h2>
             )}
             <div aria-busy="true" />
-            <button onClick={() => window.location.reload()}>Disconnect</button>
+            <ReloadPage>Disconnect</ReloadPage>
         </>
     );
 }

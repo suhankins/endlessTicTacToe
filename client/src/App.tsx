@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Connected } from './Connected.js';
 import { Connecting } from './Connecting.js';
+import { Disconnected } from './Disconnected.js';
 import { InLobby } from './InLobby.js';
 
 export const App = () => {
     const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
-        'ws://localhost:9000'
+        'ws://localhost:9000',
+        { onClose: () => setState('disconnected') }
     );
 
     const [state, setState] = useState('connecting');
@@ -36,6 +38,10 @@ export const App = () => {
                                     lastJsonMessage={lastJsonMessage}
                                 />
                             );
+                        case 'disconnected':
+                            return (
+                                <Disconnected />
+                            )
                         default:
                             return <Connecting />;
                     }

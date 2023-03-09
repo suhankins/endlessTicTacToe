@@ -18,10 +18,10 @@ export function InLobby({
 
     useEffect(() => {
         if (lastJsonMessage !== null) {
-            const action = lastJsonMessage as Message;
-            switch (action.action) {
+            const message = lastJsonMessage as Message;
+            switch (message.action) {
                 case 'lobbyIndex':
-                    setLobbyIndex(action.data);
+                    setLobbyIndex(message.data);
                     break;
                 case 'joinedLobby':
                     setState('inGame');

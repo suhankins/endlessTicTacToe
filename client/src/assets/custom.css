@@ -1,0 +1,14 @@
+.field {
+    grid-template-columns: repeat(auto-fit, minmax(0%, 1fr));
+}
+
+.square {
+    width: 4rem;
+    height: 4rem;
+}
+
+.inline > * {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    display: inline-block;
+}

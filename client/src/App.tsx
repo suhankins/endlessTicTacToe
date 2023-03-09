@@ -4,6 +4,7 @@ import { Connected } from './states/Connected.js';
 import { Connecting } from './states/Connecting.js';
 import { Disconnected } from './states/Disconnected.js';
 import { InLobby } from './states/InLobby.js';
+import { InGame } from './states/InGame.js';
 
 export const App = () => {
     const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
@@ -38,10 +39,15 @@ export const App = () => {
                                     lastJsonMessage={lastJsonMessage}
                                 />
                             );
-                        case 'disconnected':
+                        case 'inGame':
                             return (
-                                <Disconnected />
-                            )
+                                <InGame
+                                    sendJsonMessage={sendJsonMessage}
+                                    lastJsonMessage={lastJsonMessage}
+                                />
+                            );
+                        case 'disconnected':
+                            return <Disconnected />;
                         default:
                             return <Connecting />;
                     }

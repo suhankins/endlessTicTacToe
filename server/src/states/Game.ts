@@ -48,6 +48,7 @@ export class Game extends MultiConnectionState {
                                     data: index,
                                 })
                             );
+                            break;
                         case 'mark':
                             const spot = message.data as [number, number];
                             if (
@@ -63,16 +64,24 @@ export class Game extends MultiConnectionState {
                             this.field[spot[1]][spot[0]] = index + 1;
                             const win = this.checkWin();
                             if (win === undefined) {
-                                if (this.checkDraw()) this.expandField();
                                 this.whoseTurn =
                                     this.whoseTurn === 0
                                         ? (this.whoseTurn = 1)
                                         : (this.whoseTurn = 0);
+                                if (this.checkDraw()) this.expandField();
                             } else {
                                 this.victory(this.whoseTurn);
                                 this.whoseTurn = -1;
                             }
                             this.sendField();
+                            break;
+                        case 'isMyTurn':
+                            websocket.send(
+                                JSON.stringify({
+                                    action: 'isMyTurn',
+                                    data: this.whoseTurn === index,
+                                })
+                            );
                             break;
                     }
                 } catch (e) {
@@ -132,6 +141,7 @@ export class Game extends MultiConnectionState {
      */
     checkColumn(x: number, y: number) {
         return (
+            this.field[y][x] !== 0 &&
             this.field[y][x] === this.field[y + 1][x] &&
             this.field[y][x] === this.field[y + 2][x]
         );
@@ -144,6 +154,7 @@ export class Game extends MultiConnectionState {
      */
     checkRow(x: number, y: number) {
         return (
+            this.field[y][x] !== 0 &&
             this.field[y][x] === this.field[y][x + 1] &&
             this.field[y][x] === this.field[y][x + 2]
         );
@@ -156,6 +167,7 @@ export class Game extends MultiConnectionState {
      */
     checkDiagonal(x: number, y: number) {
         return (
+            this.field[y][x] !== 0 &&
             this.field[y][x] === this.field[y + 1][x + 1] &&
             this.field[y][x] === this.field[y + 2][x + 2]
         );

@@ -3,7 +3,7 @@ import {
     JsonValue,
     SendJsonMessage,
 } from 'react-use-websocket/dist/lib/types.js';
-import { Message } from './Message.js';
+import { Message } from '../Message.js';
 
 export function Connected({
     setState,

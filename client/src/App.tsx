@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { Connected } from './Connected.js';
-import { Connecting } from './Connecting.js';
-import { Disconnected } from './Disconnected.js';
-import { InLobby } from './InLobby.js';
+import { Connected } from './states/Connected.js';
+import { Connecting } from './states/Connecting.js';
+import { Disconnected } from './states/Disconnected.js';
+import { InLobby } from './states/InLobby.js';
 
 export const App = () => {
     const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(

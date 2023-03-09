@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { JsonValue, SendJsonMessage } from 'react-use-websocket/dist/lib/types';
-import { Message } from './Message';
-import { ReloadPage } from './ReloadPage';
+import { Message } from '../Message';
+import { ReloadPage } from '../components/ReloadPage';
 
 export function InLobby({
     setState,

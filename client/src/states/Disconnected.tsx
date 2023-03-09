@@ -1,4 +1,4 @@
-import { ReloadPage } from "./ReloadPage";
+import { ReloadPage } from "../components/ReloadPage";
 
 export function Disconnected() {
     return (

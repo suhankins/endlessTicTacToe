@@ -8,7 +8,7 @@ import { InGame } from './states/InGame.js';
 
 export const App = () => {
     const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
-        'ws://localhost:9000',
+        'wss://endlesstictactoe.onrender.com',
         { onClose: () => setState('disconnected') }
     );
 

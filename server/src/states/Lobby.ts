@@ -17,16 +17,22 @@ export class Lobby extends State {
         console.log(`Lobby ${this.index} created`);
 
         this.connection.on('message', (rawData) => {
-            const message = JSON.parse(rawData.toString()) as Message;
-            switch (message.action) {
-                case 'lobbyIndex':
-                    this.connection.send(
-                        JSON.stringify({
-                            action: 'lobbyIndex',
-                            data: this.index,
-                        })
-                    );
-                    break;
+            try {
+                const message = JSON.parse(rawData.toString()) as Message;
+                switch (message.action) {
+                    case 'lobbyIndex':
+                        this.connection.send(
+                            JSON.stringify({
+                                action: 'lobbyIndex',
+                                data: this.index,
+                            })
+                        );
+                        break;
+                }
+            } catch (e) {
+                console.error(`Lobby ${this.index} caused an error!`);
+                console.error(e);
+                this.connection.close();
             }
         });
 

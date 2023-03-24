@@ -8,9 +8,10 @@ import { InGame } from './states/InGame.js';
 
 export const App = () => {
     const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
-        import.meta.env.DEV ? 'ws://localhost:9000' :
-        'wss://endlesstictactoe.onrender.com',
-        { onClose: () => setState('disconnected') }
+        import.meta.env.DEV
+            ? 'ws://localhost:9000'
+            : 'wss://endlesstictactoe.onrender.com',
+        { onClose: () => state !== 'victory' && setState('disconnected') }
     );
 
     const [state, setState] = useState('connecting');
@@ -40,9 +41,11 @@ export const App = () => {
                                     lastJsonMessage={lastJsonMessage}
                                 />
                             );
+                        case 'victory':
                         case 'inGame':
                             return (
                                 <InGame
+                                    setState={setState}
                                     sendJsonMessage={sendJsonMessage}
                                     lastJsonMessage={lastJsonMessage}
                                 />

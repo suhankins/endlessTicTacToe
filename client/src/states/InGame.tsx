@@ -12,9 +12,11 @@ const victoryText = {
 };
 
 export function InGame({
+    setState,
     lastJsonMessage,
     sendJsonMessage,
 }: {
+    setState: React.Dispatch<React.SetStateAction<string>>;
     lastJsonMessage: JsonValue | null;
     sendJsonMessage: SendJsonMessage;
 }) {
@@ -43,6 +45,7 @@ export function InGame({
                     } else {
                         setVictory(victoryText.notYou);
                     }
+                    setState('victory');
                     break;
             }
         }
@@ -78,7 +81,9 @@ export function InGame({
                                 aria-disabled={square !== 0}
                                 key={`square ${x};${y}`}
                                 aria-label={marks[square]}
-                                className={`square ${square >= 3 && 'contrast'}`}
+                                className={`square ${
+                                    square >= 3 && 'contrast'
+                                }`}
                                 onClick={() => mark(x, y)}
                             >
                                 {markIcons[square]}

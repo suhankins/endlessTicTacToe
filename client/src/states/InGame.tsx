@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { JsonValue, SendJsonMessage } from 'react-use-websocket/dist/lib/types';
 import { Message } from '../Message';
-import circle from '../assets/circle.svg';
-import cross from '../assets/cross.svg';
 import { ReloadPage } from '../components/ReloadPage';
+import { Circle, Cross } from '../components/Icons';
 
-const marks = ['crosses', 'circles'];
+const marks = ['empty', 'crosses', 'circles'];
 const markIcons = [
     <></>,
-    <img alt="cross" src={cross} />,
-    <img alt="circle" src={circle} />,
+    <Cross />,
+    <Circle />,
 ];
 const victoryText = {
     you: 'Congratulations! You won!',
@@ -71,15 +70,17 @@ export function InGame({
 
     return (
         <div>
-            {selfIndex !== -1 && <h1>You play as {marks[selfIndex]}</h1>}
+            {selfIndex !== -1 && <h1>You play as {marks[selfIndex + 1]}</h1>}
             {isMyTurn && <h2>It's your turn!</h2>}
             <h2>{victory}</h2>
             {victory !== '' && <ReloadPage>Back to menu?</ReloadPage>}
             <div>
                 {field.map((row, y) => (
-                    <div className="inline">
+                    <div className="inline" key={`row ${y}`}>
                         {row.map((square, x) => (
                             <button
+                                key={`square ${x};${y}`}
+                                aria-label={marks[square]}
                                 className="square"
                                 onClick={() => mark(x, y)}
                             >

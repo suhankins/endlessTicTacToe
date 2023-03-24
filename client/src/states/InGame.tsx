@@ -70,8 +70,7 @@ export function InGame({
     return (
         <div>
             {selfIndex !== -1 && <h1>You play as {marks[selfIndex + 1]}</h1>}
-            {isMyTurn && <h2>It's your turn!</h2>}
-            <h2>{victory}</h2>
+            {(victory && <h2>{victory}</h2>) || (isMyTurn ? <h2>It's your turn!</h2> : <h2>It's opponent's turn</h2>)}
             {victory !== '' && <ReloadPage>Back to menu?</ReloadPage>}
             <div>
                 {field.map((row, y) => (
@@ -79,6 +78,7 @@ export function InGame({
                         {row.map((square, x) => (
                             <button
                                 aria-disabled={square !== 0}
+                                disabled={!isMyTurn}
                                 key={`square ${x};${y}`}
                                 aria-label={marks[square]}
                                 className={`square ${

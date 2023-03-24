@@ -4,12 +4,8 @@ import { Message } from '../Message';
 import { ReloadPage } from '../components/ReloadPage';
 import { Circle, Cross } from '../components/Icons';
 
-const marks = ['empty', 'crosses', 'circles'];
-const markIcons = [
-    <></>,
-    <Cross />,
-    <Circle />,
-];
+const marks = ['empty', 'crosses', 'circles', 'crosses-win', 'circles-win'];
+const markIcons = [<></>, <Cross />, <Circle />, <Cross />, <Circle />];
 const victoryText = {
     you: 'Congratulations! You won!',
     notYou: 'Sadly, you lost.',
@@ -79,9 +75,10 @@ export function InGame({
                     <div className="inline" key={`row ${y}`}>
                         {row.map((square, x) => (
                             <button
+                                aria-disabled={square !== 0}
                                 key={`square ${x};${y}`}
                                 aria-label={marks[square]}
-                                className="square"
+                                className={`square ${square >= 3 && 'contrast'}`}
                                 onClick={() => mark(x, y)}
                             >
                                 {markIcons[square]}

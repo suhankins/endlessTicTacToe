@@ -14,12 +14,13 @@ export class Game extends MultiConnectionState {
         return this.connection[1];
     }
 
-    whoseTurn: number = 0;
+    private whoseTurn: number = 0;
+    private symbolsNeeded: number = 3;
 
     /**
      * Field must be square or else some validation logic will fail
      */
-    field: number[][] = this.emptyField(Game.DEFAULT_SIZE);
+    private field: number[][] = this.getEmptyField(Game.DEFAULT_SIZE);
 
     constructor(crosses: WebSocket, circles: WebSocket) {
         super([crosses, circles]);
@@ -71,6 +72,9 @@ export class Game extends MultiConnectionState {
                                 if (this.checkDraw()) this.expandField();
                             } else {
                                 this.victory(this.whoseTurn);
+                                win.line.forEach((square) => {
+                                    this.field[square.y][square.x] += 2;
+                                });
                                 this.whoseTurn = -1;
                             }
                             this.sendField();
@@ -116,79 +120,106 @@ export class Game extends MultiConnectionState {
     /**
      * @returns winner's index + 1 or undefined
      */
-    checkWin() {
-        // column && diagonal
-        for (let y = 0; y < this.field.length - 2; y++) {
-            // column
-            for (let x = 0; x < this.field.length; x++)
-                if (this.checkColumn(x, y)) return this.field[y][x];
-            // diagonal left-right
-            for (let x = 0; x < this.field.length - 2; x++)
-                if (this.checkDiagonal(x, y)) return this.field[y][x];
-            // diagonal right-left
-            for (let x = this.field.length; x > 2; x++)
-                if (this.checkDiagonalRightLeft(x, y)) return this.field[y][x];
+    checkWin():
+        | { symbol: number; line: { x: number; y: number }[] }
+        | undefined {
+        const size = this.field.length;
+
+        // Check rows
+        for (let row = 0; row < size; row++) {
+            let symbol = this.field[row][0];
+            let count = 1;
+            let line = [{ x: 0, y: row }];
+            for (let col = 1; col < size; col++) {
+                if (this.field[row][col] === symbol) {
+                    count++;
+                    line.push({ x: col, y: row });
+                    if (count === this.symbolsNeeded && symbol !== 0) {
+                        return {
+                            symbol: symbol,
+                            line: line,
+                        };
+                    }
+                } else {
+                    symbol = this.field[row][col];
+                    count = 1;
+                    line = [{ x: col, y: row }];
+                }
+            }
         }
-        // row
-        for (let y = 0; y < this.field.length; y++) {
-            for (let x = 0; x < this.field.length - 2; x++)
-                if (this.checkRow(x, y)) return this.field[y][x];
+
+        // Check columns
+        for (let col = 0; col < size; col++) {
+            let symbol = this.field[0][col];
+            let count = 1;
+            let line = [{ x: col, y: 0 }];
+            for (let row = 1; row < size; row++) {
+                if (this.field[row][col] === symbol) {
+                    count++;
+                    line.push({ x: col, y: row });
+                    if (count === this.symbolsNeeded && symbol !== 0) {
+                        return {
+                            symbol: symbol,
+                            line: line,
+                        };
+                    }
+                } else {
+                    symbol = this.field[row][col];
+                    count = 1;
+                    line = [{ x: col, y: row }];
+                }
+            }
         }
+
+        // Check diagonals
+        // Top-left to bottom-right diagonals
+        for (let row = 0; row < size - this.symbolsNeeded + 1; row++) {
+            for (let col = 0; col < size - this.symbolsNeeded + 1; col++) {
+                let symbol = this.field[row][col];
+                let count = 1;
+                let line = [{ x: col, y: row }];
+                for (let i = 1; i < this.symbolsNeeded; i++) {
+                    if (this.field[row + i][col + i] === symbol) {
+                        count++;
+                        line.push({ x: col + i, y: row + i });
+                        if (count === this.symbolsNeeded && symbol !== 0) {
+                            return {
+                                symbol: symbol,
+                                line: line,
+                            };
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Top-right to bottom-left diagonals
+        for (let row = 0; row < size - this.symbolsNeeded + 1; row++) {
+            for (let col = size - 1; col >= this.symbolsNeeded - 1; col--) {
+                let symbol = this.field[row][col];
+                let count = 1;
+                let line = [{ x: col, y: row }];
+                for (let i = 1; i < this.symbolsNeeded; i++) {
+                    if (this.field[row + i][col - i] === symbol) {
+                        count++;
+                        line.push({ x: col - i, y: row + i });
+                        if (count === this.symbolsNeeded && symbol !== 0) {
+                            return {
+                                symbol: symbol,
+                                line: line,
+                            };
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
         return undefined;
     }
-
-    /**
-     * X . .
-     * X . .
-     * X . .
-     */
-    checkColumn(x: number, y: number) {
-        return (
-            this.field[y][x] !== 0 &&
-            this.field[y][x] === this.field[y + 1][x] &&
-            this.field[y][x] === this.field[y + 2][x]
-        );
-    }
-
-    /**
-     * X X X
-     * . . .
-     * . . .
-     */
-    checkRow(x: number, y: number) {
-        return (
-            this.field[y][x] !== 0 &&
-            this.field[y][x] === this.field[y][x + 1] &&
-            this.field[y][x] === this.field[y][x + 2]
-        );
-    }
-
-    /**
-     * X . .
-     * . X .
-     * . . X
-     */
-    checkDiagonal(x: number, y: number) {
-        return (
-            this.field[y][x] !== 0 &&
-            this.field[y][x] === this.field[y + 1][x + 1] &&
-            this.field[y][x] === this.field[y + 2][x + 2]
-        );
-    }
-
-    /**
-     * X . .
-     * . X .
-     * . . X
-     */
-        checkDiagonalRightLeft(x: number, y: number) {
-            return (
-                this.field[y][x] !== 0 &&
-                this.field[y][x] === this.field[y + 1][x - 1] &&
-                this.field[y][x] === this.field[y + 2][x - 2]
-            );
-        }
-    
 
     checkDraw() {
         return this.field.every((row) => row.every((column) => column !== 0));
@@ -201,7 +232,7 @@ export class Game extends MultiConnectionState {
         });
     }
 
-    emptyField(size: number) {
+    getEmptyField(size: number) {
         return [...Array(size)].map(() => [...Array(size)].map(() => 0));
     }
 

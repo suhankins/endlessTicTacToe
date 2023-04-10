@@ -2,8 +2,8 @@
     "name": "endless_tic-tac-toe",
     "type": "module",
     "scripts": {
-        "install": "cd client && npm install && cd ../server && npm install",
         "build": "cd client && npm run build && cd ../server && npm run build",
         "start": "cd server && npm start"
-    }
+    },
+	"workspaces" : ["client", "server"]
 }
